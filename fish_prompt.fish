@@ -1,6 +1,6 @@
 function fish_prompt
     set -l status_copy $status
-    set -l color
+    set -l color (set_color blue)
 
     if test "$status_copy" -ne 0
         set color (set_color $fish_color_error)

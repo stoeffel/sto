@@ -28,18 +28,18 @@ function fish_right_prompt
 
         if git_is_staged
             if git_is_dirty
-                set git_glyph "*"
+                set git_glyph "* "
             else
-                set git_glyph "+"
+                set git_glyph "+ "
             end
         else if git_is_dirty
-            set git_glyph "*"
+            set git_glyph "* "
 
         else if git_is_touched
-            set git_glyph "*"
+            set git_glyph "* "
         end
 
-        set -l git_ahead (git_ahead "↑" "↓" "↑↓")
+        set -l git_ahead (git_ahead "↑ " "↓ " "↑↓ ")
 
         if test "$branch_name" = "master"
             set branch_name
@@ -47,7 +47,7 @@ function fish_right_prompt
             set branch_name "$branch_name"
         end
 
-        echo -sn "$color_git$git_glyph $branch_name$git_ahead$color_normal"
+        echo -sn "$color_git$git_glyph$git_ahead$branch_name$color_normal"
     end
 
 end
