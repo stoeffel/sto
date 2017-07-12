@@ -18,11 +18,6 @@ function fish_right_prompt
         set color "$color_error"
     end
 
-    if test "$CMD_DURATION" -gt 250
-        set -l duration (echo $CMD_DURATION | humanize_duration)
-        echo -sn "$color($duration)$color_normal "
-    end
-
     if set branch_name (git_branch_name)
         set -l git_glyph
 
@@ -44,10 +39,42 @@ function fish_right_prompt
         if test "$branch_name" = "master"
             set branch_name
         else
-            set branch_name "$branch_name"
+            set branch_name_len (string length $branch_name)
+            set max_width (math (tput cols) / 5)
+            if [ $branch_name_len -gt $max_width ]
+              set start_pos (math $branch_name_len - $max_width)
+              set branch_name (string sub -s $start_pos "$branch_name")
+              set branch_name "...$branch_name"
+            else
+              set branch_name "$branch_name"
+            end
         end
 
         echo -sn "$color_git$git_glyph$git_ahead$branch_name$color_normal"
+        mode_prompt
     end
 
+end
+
+function mode_prompt --description "Display the default mode for the prompt"
+    echo -n ' '
+    # Do nothing if not in vi mode
+    if test "$fish_key_bindings" = "fish_vi_key_bindings"
+        or test "$fish_key_bindings" = "fish_hybrid_key_bindings"
+        switch $fish_bind_mode
+            case default
+                set_color --bold --background red white
+                echo ' '
+            case insert
+                set_color --bold --background cyan white
+                echo ' '
+            case replace_one
+                set_color --bold --background red white
+                echo ' '
+            case visual
+                set_color --bold --background magenta white
+                echo ' '
+        end
+        set_color normal
+    end
 end
