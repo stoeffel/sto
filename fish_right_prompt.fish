@@ -1,4 +1,9 @@
 function fish_right_prompt
+    set -l nix_shell_info (
+      if test "$IN_NIX_SHELL" = "1"
+        echo -n " <nix>"
+      end
+    )
     set -l status_copy $status
     set -l status_code $status_copy
 
@@ -42,15 +47,15 @@ function fish_right_prompt
             set branch_name_len (string length $branch_name)
             set max_width (math (tput cols) / 5)
             if [ $branch_name_len -gt $max_width ]
-              set start_pos (math $branch_name_len - $max_width)
-              set branch_name (string sub -s $start_pos "$branch_name")
-              set branch_name "...$branch_name"
+                set start_pos (math $branch_name_len - $max_width)
+                set branch_name (string sub -s $start_pos "$branch_name")
+                set branch_name "...$branch_name"
             else
-              set branch_name "$branch_name"
+                set branch_name "$branch_name"
             end
         end
 
-        echo -sn "$color_git$git_glyph$git_ahead$branch_name$color_normal"
+        echo -sn "$color_git$git_glyph$git_ahead$branch_name$color_normal$nix_shell_info"
     end
     mode_prompt
 end
